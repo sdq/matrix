@@ -1,24 +1,12 @@
-# Swift矩阵与向量运算
+//: Playground - noun: a place where people can play
 
-抽时间写了一下swift上的向量与矩阵运算，使用的是原生的Accelerate框架，便于之后的开发。
-
-### 基础框架与类型定义
-
-```swift
 import Foundation
 import Accelerate
 
 typealias Matrix = Array<[Double]>
 typealias Vector = [Double]
-```
 
-### 向量运算
-基础运算：
-1. 向量相加
-2. 向量相减
-3. 向量点乘常数
-
-```swift
+// Vector Calculation
 func vecAdd(vec1:Vector, vec2:Vector) -> Vector {
     var addresult = Vector(repeating: 0.0, count: vec1.count)
     vDSP_vaddD(vec1, 1, vec2, 1, &addresult, 1, vDSP_Length(vec1.count))
@@ -39,13 +27,7 @@ func vecScale(vec:Vector, num:Double) -> Vector {
 }
 
 vecScale(vec: [1, 3], num: 0.6)
-```
 
-均值化:
-1. 均值向量
-2. 均值化
-
-```swift
 // Mean Vector
 func meanVector(inputMatrix:Matrix) -> Vector {
     let vecDimension = inputMatrix[0].count
@@ -61,16 +43,9 @@ func meanNormalization(inputMatrix:Matrix) -> Matrix {
     let outputMatrix = inputMatrix.map({vecSub(vec1: $0, vec2: averageVec)})
     return outputMatrix
 }
-```
 
-### 矩阵运算
-基础运算
-1. 矩阵相加
-2. 矩阵相减
-3. 矩阵相乘
-4. 矩阵点乘常数
+// Matrix Calculation
 
-```swift
 func matAdd(mat1:Matrix, mat2:Matrix) -> Matrix {
     var outputMatrix:Matrix = []
     for i in 0..<mat1.count {
@@ -112,14 +87,7 @@ func matScale(mat:Matrix, num:Double) -> Matrix {
     let outputMatrix = mat.map({vecScale(vec: $0, num: num)})
     return outputMatrix
 }
-```
 
-高级运算
-1. 矩阵转置transport
-2. 矩阵求逆invert
-3. 协方差矩阵Covariance Matrix
-
-```swift
 func transpose(inputMatrix: Matrix) -> Matrix {
     let m = inputMatrix[0].count
     let n = inputMatrix.count
@@ -172,11 +140,7 @@ func covarianceMatrix(inputMatrix:Matrix) -> Matrix {
     let t = transpose(inputMatrix: inputMatrix)
     return matMul(mat1: inputMatrix, mat2: t)
 }
-```
 
-部分测试
-
-```swift
 meanNormalization(inputMatrix: [[1.0,2.0,4.0],[3.0,3.0,5.0]])
 matAdd(mat1: [[1.0, 2.0],[3.0, 3.0],[3.0, 2.0]], mat2: [[1.0, 2.0],[3.0, 3.0],[3.0, 100.0]])
 matSub(mat1: [[1.0, 2.0],[3.0, 3.0],[3.0, 2.0]], mat2: [[1.0, 2.0],[3.0, 3.0],[4.0, 100.0]])
@@ -186,13 +150,7 @@ transpose(inputMatrix: [[1.0,2.0,7.0],[3.0,4.0,8.0]])
 covarianceMatrix(inputMatrix: [[1.0,2.0],[3.0,3.0]])
 var m = [[1.0, 2.0], [3.0, 4.0]]
 invert(inputMatrix: m)    // returns [-2.0, 1.0, 1.5, -0.5]
-```
 
-矩阵分解
-1. 奇异值分解svd
-2. 特征值分解ev
-
-```swift
 func svd(inputMatrix:Matrix) -> (u:Matrix, s:Matrix, v:Matrix) {
     let m = inputMatrix[0].count
     let n = inputMatrix.count
@@ -248,7 +206,6 @@ func ev(inputMatrix: Matrix) -> (eigenvalues:Vector, eigenvectors:Matrix) {
     var matrix:[__CLPK_doublereal] = x
     
     var N = __CLPK_integer(sqrt(Double(x.count)))
-    var pivots = [__CLPK_integer](repeating: 0,count: Int(N))
     var workspaceQuery: Double = 0.0
     var error : __CLPK_integer = 0
     var lwork = __CLPK_integer(-1)
@@ -270,5 +227,4 @@ func ev(inputMatrix: Matrix) -> (eigenvalues:Vector, eigenvectors:Matrix) {
     return (wr, eigenvectors)
 
 }
-```
 
