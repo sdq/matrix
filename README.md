@@ -2,6 +2,8 @@
 
 抽时间写了一下swift上的向量与矩阵运算，使用的是原生的Accelerate框架，便于之后的开发。
 
+*(注：欢迎随意使用源码，如需转载请注明出处)*
+
 ### 基础框架与类型定义
 
 ```swift
@@ -271,5 +273,3 @@ func ev(inputMatrix: Matrix) -> (eigenvalues:Vector, eigenvectors:Matrix) {
 
 }
 ```
-
-*如需转载请注明出处*
