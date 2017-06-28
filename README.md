@@ -92,23 +92,6 @@ func matSub(mat1:Matrix, mat2:Matrix) -> Matrix {
     return outputMatrix
 }
 
-func matMul(mat1:Matrix, mat2:Matrix) -> Matrix {
-    let m = mat1[0].count
-    let n = mat2.count
-    let p = mat1.count
-    var mulresult = Vector(repeating: 0.0, count: m*n)
-    let mat1t = transpose(inputMatrix: mat1)
-    let mat1vec = mat1t.reduce([], {$0+$1})
-    let mat2t = transpose(inputMatrix: mat2)
-    let mat2vec = mat2t.reduce([], {$0+$1})
-    vDSP_mmulD(mat1vec, 1, mat2vec, 1, &mulresult, 1, vDSP_Length(m), vDSP_Length(n), vDSP_Length(p))
-    var outputMatrix:Matrix = []
-    for i in 0..<n {
-        outputMatrix.append(Array(mulresult[i*m..<i*m+m]))
-    }
-    return outputMatrix
-}
-
 func matScale(mat:Matrix, num:Double) -> Matrix {
     let outputMatrix = mat.map({vecScale(vec: $0, num: num)})
     return outputMatrix
