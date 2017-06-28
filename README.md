@@ -69,8 +69,7 @@ func meanNormalization(inputMatrix:Matrix) -> Matrix {
 基础运算
 1. 矩阵相加
 2. 矩阵相减
-3. 矩阵相乘
-4. 矩阵点乘常数
+3. 矩阵点乘常数
 
 ```swift
 func matAdd(mat1:Matrix, mat2:Matrix) -> Matrix {
@@ -118,6 +117,7 @@ func matScale(mat:Matrix, num:Double) -> Matrix {
 
 高级运算
 1. 矩阵转置transport
+2. 矩阵相乘
 2. 矩阵求逆invert
 3. 协方差矩阵Covariance Matrix
 
@@ -133,6 +133,27 @@ func transpose(inputMatrix: Matrix) -> Matrix {
         outputMatrix.append(Array(result[i*n..<i*n+n]))
     }
     return outputMatrix
+}
+
+func matMul(mat1:Matrix, mat2:Matrix) -> Matrix {
+    if mat1.count != mat2[0].count {
+        print("error")
+        return []
+    }
+    let m = mat1[0].count
+    let n = mat2.count
+    let p = mat1.count
+    var mulresult = Vector(repeating: 0.0, count: m*n)
+    let mat1t = transpose(inputMatrix: mat1)
+    let mat1vec = mat1t.reduce([], {$0+$1})
+    let mat2t = transpose(inputMatrix: mat2)
+    let mat2vec = mat2t.reduce([], {$0+$1})
+    vDSP_mmulD(mat1vec, 1, mat2vec, 1, &mulresult, 1, vDSP_Length(m), vDSP_Length(n), vDSP_Length(p))
+    var outputMatrix:Matrix = []
+    for i in 0..<m {
+        outputMatrix.append(Array(mulresult[i*n..<i*n+n]))
+    }
+    return transpose(inputMatrix: outputMatrix)
 }
 
 func invert(inputMatrix: Matrix) -> Matrix? {
@@ -267,7 +288,7 @@ func ev(inputMatrix: Matrix) -> (eigenvalues:Vector, eigenvectors:Matrix) {
     
     var eigenvectors:Matrix = []
     for i in 0..<n {
-        eigenvectors.append(Array(vl[i*n..<i*n+n]))
+        eigenvectors.append(Array(vr[i*n..<i*n+n]))
     }
     return (wr, eigenvectors)
 
